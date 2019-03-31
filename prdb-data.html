@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>D&amp;B IPT Ticket Resolution</title>
+    <link href="https://productdesign.dnb.com/wp-content/themes/dnb-product-style-guide/library/dnb-product-design-guide/css/dnb-product-design-guide.css"
+        rel="stylesheet">
+<style>
+    body {
+        background: #F1F6F8;
+        font-size: 12px;
+    }
+    .panel>.panel-heading .btn-primary-blue .badge {
+        color: #009ece;
+        background-color: #fff;
+    }
+    .panel>.panel-heading .btn {
+        margin:0;
+    }
+    .panel>.panel-heading span {
+        float:right;
+        margin-left:5px;
+    }
+    .panel>.panel-heading>.panel-title strong {
+        margin-top:11px;
+    }
+    .panel>.panel-footer .alert {
+        margin-bottom:0;
+    }
+    td .alert {
+        margin:0;
+    }
+    .table>tbody>tr>td.comment {
+        max-width:500px;
+        line-height:1.6em;
+    }
+    h3.panel-title i.match-icon {
+        padding:0 3px;
+    }
+    h3.panel-title i.match-icon.icon-delete {
+        color:#cf3154;
+    }
+    h3.panel-title i.match-icon.icon-success {
+        color:#73af55;
+    }
+    h3.panel-title i.match-icon.icon-chain {
+        color:#e1a357;
+    }
+    h3.panel-title i.match-icon.icon-warning {
+        color:#3095b4;
+    }
+    table.match-grade-tip td, table.match-grade-tip th {
+        white-space:nowrap;
+        text-align:left;
+        padding:0 3px;
+    }
+    table.match-grade-tip tr {
+        border:2px solid #005172;
+    }
+    table.match-grade-tip tr.match-grade-A {
+        background-color:#69C568;
+    }
+    table.match-grade-tip tr.match-grade-B {
+        background-color:#F79851;
+    }
+    table.match-grade-tip tr.match-grade-F {
+        background-color:#B54039;
+    }
+    div.tooltip-inner {
+        max-width:1000px;
+    }
+    div.tooltip span.data-detail span.btn-icon-left {
+        color:#005172;
+        font-size:25px;
+    }
+    .ner {
+        background-color:#333;
+    }
+    .ner a {
+        color:#fff;
+    }
+    .tooltip.top .tooltip-arrow.ner-arw {
+        border-top-color:#333;
+    }
+    .ner-PERSON {
+        background-color:#005172;
+    }
+    .tooltip.top .tooltip-arrow.ner-PERSON-arw {
+        border-top-color:#005172;
+    }
+    .ner-PHONE {
+        background-color:#693A77;
+    }
+    .tooltip.top .tooltip-arrow.ner-PHONE-arw {
+        border-top-color:#693A77;
+    }
+    .ner-DUNS {
+        background-color:#E1A357;
+    }
+    .tooltip.top .tooltip-arrow.ner-DUNS-arw {
+        border-top-color:#E1A357;
+    }
+    .ner-ORGANIZATION {
+        background-color:#BC4C05;
+    }
+    .tooltip.top .tooltip-arrow.ner-ORGANIZATION-arw {
+        border-top-color:#BC4C05;
+    }
+    .ner-EMAIL {
+        background-color:#284E36;
+    }
+    .tooltip.top .tooltip-arrow.ner-EMAIL-arw {
+        border-top-color:#284E36;
+    }
+    .ner-ADDRESS {
+        background-color:#9C5FB5;
+    }
+    .tooltip.top .tooltip-arrow.ner-ADDRESS-arw {
+        border-top-color:#9C5FB5;
+    }
+    .ner-CITY {
+        background-color:#006265;
+    }
+    .tooltip.top .tooltip-arrow.ner-CITY-arw {
+        border-top-color:#006265;
+    }
+    .ner-STATE_OR_PROVINCE {
+        background-color:#B54039;
+    }
+    .tooltip.top .tooltip-arrow.ner-STATE_OR_PROVINCE-arw {
+        border-top-color:#B54039;
+    }
+    .ner-COUNTRY {
+        background-color:#B54039;
+    }
+    .tooltip.top .tooltip-arrow.ner-COUNTRY-arw {
+        border-top-color:#B54039;
+    }
+    .ner-DATE {
+        background-color:#3095B4;
+    }
+    .tooltip.top .tooltip-arrow.ner-DATE-arw {
+        border-top-color:#3095B4;
+    }
+    .ner-LOCATION {
+        background-color:#8F3F6D;
+    }
+    .tooltip.top .tooltip-arrow.ner-LOCATION-arw {
+        border-top-color:#8F3F6D;
+    }
+    span.label.pass-param {
+        color:#002e41;
+        border-color:#00B2A9;
+        font-size:75%;
+        line-height:2em;
+    }
+    span.label.pass-param.pass-param-Text {
+        border-color:#9C5FB5;
+    }
+    div.panel.passtype-Structured {
+        border-color:#00B2A9;
+    }
+    div.panel.passtype-Structured>div.panel-heading, div.panel.passtype-Structured>div.panel-body {
+        border-right-color:#00B2A9;
+        border-left-color:#00B2A9;
+    }
+    div.panel.passtype-Unstructured {
+        border-color:#9C5FB5;
+    }
+    div.panel.passtype-Unstructured>div.panel-heading, div.panel.passtype-Unstructured>div.panel-body {
+        border-right-color:#9C5FB5;
+        border-left-color:#9C5FB5;
+    }
+    div.panel-body.overflow {
+        overflow-x:auto;
+    }
+    .table-list td:first-child {
+        color: #005172;
+        font-weight: bold;
+        padding-right: 15px;
+    }
+    .lg-list.table-list td {
+        font-size: 100%;
+        padding-bottom: 5px;
+    }
+    .table > thead > tr > th:after {
+        content:none;
+    }
+    .cluster tbody tr {
+        font-weight:bold;
+    }
+    /*Cuctom CSS Requires for new design */
+    td{
+        font-size: 95%;
+    }
+    .detailed-boxes{
+        border-color: transparent;
+        color: rgb(255, 255, 255);
+    }
+    .detailed-boxes div{
+        font-size: 12px;
+        padding: 5px 3px;
+    }
+    .detailed-boxes-data{
+        padding: 10px 10px 0px 20px;
+    }
+    .current-value{
+        padding: 16px;
+        background-color: rgb(0, 81, 114);
+        overflow: auto;
+        height: 160px;
+    }
+    .expected-value{
+        padding: 16px;
+        background-color: rgb(48, 149, 180);
+        overflow: auto;
+        height: 160px;
+    }
+    .comment-value{
+        padding: 16px;
+        background-color: rgb(115,175,85);
+        overflow: auto;
+        height: 160px;
+    }
+    .case-details{
+        padding: 5px 0px 5px 0px;
+    }
+    .case-details .col-sm-4{
+        padding-left:0px;
+    }
+    .case-details .col-sm-4:last-child{
+        padding-right:0px;
+    }
+    .panel-heading {  
+        transition: 0.4s ease;
+    }  
+    .panel-body {  
+        overflow: auto;
+        max-height: 300px; 
+        display: none;
+    } 
+    .panel-title{
+        padding: 4px 4px;
+        font-size: 11px;
+        text-transform: uppercase;
+    }
+    .tabcontent {
+        
+        width: calc(100% - 16px);
+        display: none;
+    }
+    ::-webkit-scrollbar {
+            width: 10px;
+        }
+    ::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 2px grey; 
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #bfbfbf; 
+        border-radius: 50px;
+    }
+    .ui.menu {
+        font-size: 11px;
+    }
+    .panel {
+        margin-bottom: 7px;
+        margin-top: 7px;
+        border-bottom: none;
+    }
+    .panel-info {
+        border: none;
+    }
+    .ui.grid {
+        padding: 0px 10px;
+        height: calc(100vh - 236px);
+        flex-wrap: nowrap;
+        border: 1px solid rgb(212, 212, 212);
+        margin: 0rem 1rem 1rem 1rem;
+    }
+    .twelve.wide.stretched.tabcontent {
+        width: calc(100% - -83%);
+        height: calc(100vh - 244px);
+        padding: 0px;
+        border-radius: 0.285714rem !important;
+        overflow: auto;
+    }
+    .table {
+        display: table;
+        font-size: 11px;
+    }
+    .table-cell {
+        Display: table-cell;
+        Vertical-align: top;
+    }
+    .panel-heading {
+        transition: 0.4s ease;
+    }
+    .panel-body {
+        overflow: auto;
+        max-height: 300px;
+    }
+    td {
+        font-size: 11px
+    }
+    .header-fixed .page-wrapper {
+        padding-top: 70px;
+    }
+    .ui.vertical.tabular.menu .active.item {
+        background: none #F1F6F8;
+        color: #003B53; 
+        border-right: none
+    }
+    .ui.vertical.tabular.menu {
+        border-right: none
+    }
+    .side-nav{
+        top: 70px;
+        position: fixed;
+        margin-right: 10px;
+        z-index: 20;
+        width: calc(100% - 20px);
+    }
+    .updated-value{
+        margin:-15px -15px;
+    }
+    .ui.grid>.column:not(.row).three {
+        padding: 10px 0px 10px 10px;
+        height: calc(100% - 136x);
+        margin-left: -10px;
+        margin-right: 10px;
+        background-color: cadetblue;
+    }
+    .prdb{
+        padding-top: 10px;
+        padding-left: 0px;
+    }
+    .table-detail{
+        margin-bottom: 0px;
+    }
+    .table > tbody > tr > td, .table > tfoot > tr > td {
+        padding: 10px 5px;
+        line-height: 1;
+        vertical-align: top;
+    }
+    .alert {
+        padding: 10px;
+    }
+    .dnb-project-header{
+        padding: 0px 0px;
+    }
+    .navbar-default{
+        padding: 0px 16px;
+        margin-bottom: 8px;
+        position: fixed;
+        width: 100%;
+        background-color: white;
+        z-index: 9;
+        top: 0;
+    }
+    .row-ticket{
+        padding: 0px 8px;
+        margin-top: 70px;
+        position: fixed;
+        width: 100%;
+        background-color: #f1f6f8;
+        z-index: 9;
+        top: 0;
+    }   
+    .row{
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    .fixe{
+        position: fixed;
+    }
+    .first-box,
+    .second-box,
+    .third-box,
+    .forth-box,
+    .fifth-box {
+        border: 1px solid rgb(212, 212, 212);
+        margin: 4px -4px;
+        overflow: auto;
+    }
+    .prdb-data {
+        overflow-x: scroll;
+        display: flex;
+    }
+
+    .prdb-data .row-data {
+        min-width: 280px;
+        margin: 0 5px;
+    }
+    .table>tbody>tr>th {
+        padding: 10px;
+    }
+    .more-value{
+        padding: 8px;
+        margin-top: auto;
+    }
+    .main-header-fixe{
+    position: fixed;
+    }
+    .source-content {
+        border: 0px;
+        padding: 0px;
+        max-height: calc(100vh - 300px);
+        background-color: #ffff;
+    }
+    .ui.grid.grid-open{
+        margin-top: 277px;
+    }
+    .ui.grid.grid-close{
+        margin-top: 108px;
+    }
+</style>
+
+</head>
+<body>
+    <div class="dnb-global-header navbar navbar-default fixe">
+        <span class="navbar-brand"></span>
+        <h1>IPT Ticket Resolution</h1>
+    </div>
+    <div class="row-ticket">
+        <div class="panel panel-info" >
+            <div class="panel-heading">
+                <h1 class="panel-title">Case Details #22768818 <span onclick="panelCollapsing(this, 'main')" class="icon-minus3"></span>
+                    <span>Thursday, February 7, 2019 11:43:50 AM UTC</span>
+                </h1>
+            </div>
+            <div class="row case-details">
+                <div class="col-sm-12 col-xs-12 detailed-boxes">
+                    <div class="current-value">
+                        <span class="label label-risk-oob">Current</span>
+                        <div class="detailed-boxes-data">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Subject DUNS: </b></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Business Name: </b></td>
+                                        <td>ONEHUNNID MUSIC LLC</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Tradestyle: </b></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Physical Address: </b></td>
+                                        <td>
+                                            2535 VERDE DR, APT 104,
+                                            COLORADO SPRINGS, CO 80910
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Mailing Address: </b></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Phone: </b></td>
+                                        <td>1-719-291-8416</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-sm-4 col-xs-4"><b>Principal Name: </b></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ui grid grid-open">
+        <!-- Nav tabs -->
+        <div class="three wide column">
+            <div class="ui vertical fluid tabular menu">
+                <a class="item active" onclick="openTab(event, 'Match')">Match</a>
+                <a class="item" onclick="openTab(event, 'PRDB')">PRDB <span class="match-icon icon-success"
+                        aria-hidden="true"></span></a>
+                <a class="item" onclick="openTab(event, 'Infutor')">Infutor <span class="match-icon icon-error"
+                        aria-hidden="true"></span></a>
+                <a class="item" onclick="openTab(event, 'Web')">Web <span class="match-icon icon-success"
+                        aria-hidden="true"></span></a>
+            </div>
+        </div>
+        <!-- Tab containet -->
+        <div class="twelve wide stretched tabcontent" id="Match">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-table panel-secondary match-pass">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">
+                                1] Trade Style / Physical Address
+                                <span class="pull-right">
+                                    <button class="btn btn-primary-turquoise btn-with-icon" type="button"
+                                        aria-expanded="false" data-target="#search-1-1" aria-controls="search-1-1"
+                                        id="search-1-1-button">
+                                        <span class="badge btn-icon-left">0</span><span class="">Field Searches</span>
+                                        <span class="badge btn-icon-left">0</span><span class="">Comment Searches</span>
+                                    </button>
+                                    <button class="btn btn-primary-blue btn-with-icon" type="button"
+                                        data-toggle="collapse" aria-expanded="false" data-target="#card-1-1"
+                                        aria-controls="card-1-1" id="card-1-1-button">
+                                        <span class="badge btn-icon-left">0</span><span class="btn-text">View
+                                            Matches</span>
+                                    </button>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body collapse overflow" id="card-1-1">
+                            <table class="table">
+                                <thead class="thead-inverse">
+                                    <th>Params</th>
+                                    <th>Match Grade</th>
+                                    <th>DUNS</th>
+                                    <th>Name</th>
+                                    <th>Tradestyle</th>
+                                    <th>CEO</th>
+                                    <th>Physical Address</th>
+                                    <th>Mailing Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Match Scores</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel panel-table panel-secondary match-pass">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">
+                                2] Business Name / State
+                                <span class="pull-right">
+                                    <button class="btn btn-primary-turquoise btn-with-icon" type="button"
+                                        aria-expanded="false" data-target="#search-1-2" aria-controls="search-1-2"
+                                        id="search-1-2-button">
+                                        <span class="badge btn-icon-left">1</span><span class="">Field Searches</span>
+                                        <span class="badge btn-icon-left">0</span><span class="">Comment Searches</span>
+                                    </button>
+                                    <button class="btn btn-primary-blue btn-with-icon" type="button"
+                                        data-toggle="collapse" aria-expanded="false" data-target="#card-1-2"
+                                        aria-controls="card-1-2" id="card-1-2-button">
+                                        <span class="badge btn-icon-left">0</span><span class="btn-text">View
+                                            Matches</span>
+                                    </button>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body collapse overflow" id="card-1-2">
+                            <table class="table">
+                                <thead class="thead-inverse">
+                                    <th>Params</th>
+                                    <th>Match Grade</th>
+                                    <th>DUNS</th>
+                                    <th>Name</th>
+                                    <th>Tradestyle</th>
+                                    <th>CEO</th>
+                                    <th>Physical Address</th>
+                                    <th>Mailing Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Match Scores</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel panel-table panel-secondary match-pass">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">
+                                3] Phone
+                                <span class="pull-right">
+                                    <button class="btn btn-primary-turquoise btn-with-icon" type="button"
+                                        aria-expanded="false" data-target="#search-1-3" aria-controls="search-1-3"
+                                        id="search-1-3-button">
+                                        <span class="badge btn-icon-left">1</span><span class="">Field Searches</span>
+                                        <span class="badge btn-icon-left">0</span><span class="">Comment Searches</span>
+                                    </button>
+                                    <button class="btn btn-primary-blue btn-with-icon" type="button"
+                                        data-toggle="collapse" aria-expanded="false" data-target="#card-1-3"
+                                        aria-controls="card-1-3" id="card-1-3-button">
+                                        <span class="badge btn-icon-left">0</span><span class="btn-text">View
+                                            Matches</span>
+                                    </button>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body collapse overflow" id="card-1-3">
+                            <table class="table">
+                                <thead class="thead-inverse">
+                                    <th>Params</th>
+                                    <th>Match Grade</th>
+                                    <th>DUNS</th>
+                                    <th>Name</th>
+                                    <th>Tradestyle</th>
+                                    <th>CEO</th>
+                                    <th>Physical Address</th>
+                                    <th>Mailing Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Match Scores</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel panel-table panel-secondary match-pass">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">
+                                4] Trade Style / Mailing Address
+                                <span class="pull-right">
+                                    <button class="btn btn-primary-turquoise btn-with-icon" type="button"
+                                        aria-expanded="false" data-target="#search-1-4" aria-controls="search-1-4"
+                                        id="search-1-4-button">
+                                        <span class="badge btn-icon-left">0</span><span class="">Field Searches</span>
+                                        <span class="badge btn-icon-left">0</span><span class="">Comment Searches</span>
+                                    </button>
+                                    <button class="btn btn-primary-blue btn-with-icon" type="button"
+                                        data-toggle="collapse" aria-expanded="false" data-target="#card-1-4"
+                                        aria-controls="card-1-4" id="card-1-4-button">
+                                        <span class="badge btn-icon-left">0</span><span class="btn-text">View
+                                            Matches</span>
+                                    </button>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body collapse overflow" id="card-1-4">
+                            <table class="table">
+                                <thead class="thead-inverse">
+                                    <th>Params</th>
+                                    <th>Match Grade</th>
+                                    <th>DUNS</th>
+                                    <th>Name</th>
+                                    <th>Tradestyle</th>
+                                    <th>CEO</th>
+                                    <th>Physical Address</th>
+                                    <th>Mailing Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Match Scores</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel panel-table panel-secondary match-pass">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">
+                                5] Business Name / Phone / Physical Address
+                                <span class="pull-right">
+                                    <button class="btn btn-primary-turquoise btn-with-icon" type="button"
+                                        aria-expanded="false" data-target="#search-1-5" aria-controls="search-1-5"
+                                        id="search-1-5-button">
+                                        <span class="badge btn-icon-left">1</span><span class="">Field Searches</span>
+                                        <span class="badge btn-icon-left">0</span><span class="">Comment Searches</span>
+                                    </button>
+                                    <button class="btn btn-primary-blue btn-with-icon" type="button"
+                                        data-toggle="collapse" aria-expanded="false" data-target="#card-1-5"
+                                        aria-controls="card-1-5" id="card-1-5-button">
+                                        <span class="badge btn-icon-left">0</span><span class="btn-text">View
+                                            Matches</span>
+                                    </button>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body collapse overflow" id="card-1-5">
+                            <table class="table">
+                                <thead class="thead-inverse">
+                                    <th>Params</th>
+                                    <th>Match Grade</th>
+                                    <th>DUNS</th>
+                                    <th>Name</th>
+                                    <th>Tradestyle</th>
+                                    <th>CEO</th>
+                                    <th>Physical Address</th>
+                                    <th>Mailing Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Match Scores</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="panel panel-table panel-secondary match-pass">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">
+                                6] Business Name / Phone / Mailing Address
+                                <span class="pull-right">
+                                    <button class="btn btn-primary-turquoise btn-with-icon" type="button"
+                                        aria-expanded="false" data-target="#search-1-6" aria-controls="search-1-6"
+                                        id="search-1-6-button">
+                                        <span class="badge btn-icon-left">1</span><span class="">Field Searches</span>
+                                        <span class="badge btn-icon-left">0</span><span class="">Comment Searches</span>
+                                    </button>
+                                    <button class="btn btn-primary-blue btn-with-icon" type="button"
+                                        data-toggle="collapse" aria-expanded="false" data-target="#card-1-6"
+                                        aria-controls="card-1-6" id="card-1-6-button">
+                                        <span class="badge btn-icon-left">0</span><span class="btn-text">View
+                                            Matches</span>
+                                    </button>
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body collapse overflow" id="card-1-6">
+                            <table class="table">
+                                <thead class="thead-inverse">
+                                    <th>Params</th>
+                                    <th>Match Grade</th>
+                                    <th>DUNS</th>
+                                    <th>Name</th>
+                                    <th>Tradestyle</th>
+                                    <th>CEO</th>
+                                    <th>Physical Address</th>
+                                    <th>Mailing Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Match Scores</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="twelve wide stretched tabcontent" id="PRDB">
+            <div class="panel panel-table panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Direct+ PRDB</h3>
+                </div>
+            </div>
+            <div class="prdb-data source-content">
+                    <div class="row-data">
+                        <div class="first-box">
+                            <table class="table">
+                                <tr>
+                                    <th>Name: </th>
+                                    <td>CITY BEAUTY, LLC</td>
+                                </tr>
+                                <tr>
+                                    <th>As of: </th>
+                                    <td>2019-03-08</td>
+                                </tr>
+                                <tr>
+                                    <th>Filing Date: </th>
+                                    <td>2019-02-17</td>
+                                </tr>
+                                <th>Date Incorporated: </th>
+                                <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Registration ID:</th>
+                                    <td>20191137819 <br> 20191137819</td>
+                                </tr>
+                                <tr>
+                                    <th>D&B Filing Reference No: </th>
+                                    <td>14419315380</td>
+                                </tr>
+                                <tr>
+                                    <th>State of Incorp: </th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Business Type: </th>
+                                    <td>SELLERS PERMIT</td>
+                                </tr>
+                                <tr>
+                                    <th>Status: </th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">PRIMARY ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">MAILING ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>9361 CANOGA AVE</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>913115879</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="third-box">
+                            <h4 class="panel-title">WHERE FILED: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td> STATE BOARD OF EQUALIZATION</td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>450 N STREET</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td>SACRAMENTO</td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>958140000</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="forth-box">
+                            <h4 class="panel-title">REGISTERED AGENT: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="fifth-box">
+                            <h4 class="panel-title">PRINCIPALS: </h4>
+                            <ul style="list-style-type: none; padding-left: inherit">
+                                <table class="table">
+                                    <li><tr><th>Name:</th><td>JOSH1 S GOLDER</td></tr></li>
+                                    <li><tr><th>Type:</th><td> </td></tr></li>
+                                    <li><tr><th>Pub:</th><td>IndividualNameType</td></tr></li> 
+                                    <li><tr><th>Positions:</th><td></td></tr></li>
+                                    <li><tr><th>MANAGER/MEMBER:</th><td></td></tr></li>
+                                    <li><tr><th>City/Town:</th><td></td></tr></li>
+                                    <li><tr><th>State/Territory:</th><td>CA</td></tr></li> 
+                                    <li><tr><th>Postal Code:</th><td>916040000</td></tr></li> 
+                                </table>
+                            </ul>
+                            <button class="btn btn-primary-blue btn-with-icon more-value" type="button" onclick="principalShow(this)">
+                                <span class="btn-text">See more</span>
+                            </button>
+                            <ul style="list-style-type: none; padding-left: inherit; display: none;" id="principal2">
+                                <table class="table" >
+                                    <li><tr><th>Name:</th><td>JOSH1 S GOLDER</td></tr></li>
+                                    <li><tr><th>Type:</th><td> </td></tr></li>
+                                    <li><tr><th>Pub:</th><td>IndividualNameType</td></tr></li> 
+                                    <li><tr><th>Positions:</th><td></td></tr></li>
+                                    <li><tr><th>MANAGER/MEMBER:</th><td></td></tr></li>
+                                    <li><tr><th>City/Town:</th><td></td></tr></li>
+                                    <li><tr><th>State/Territory:</th><td>CA</td></tr></li> 
+                                    <li><tr><th>Postal Code:</th><td>916040000</td></tr></li> 
+                                </table>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row-data">
+                        <div class="first-box">
+                            <table class="table">
+                                <tr>
+                                    <th>Name: </th>
+                                    <td>CITY BEAUTY, LLC</td>
+                                </tr>
+                                <tr>
+                                    <th>As of: </th>
+                                    <td>2019-03-08</td>
+                                </tr>
+                                <tr>
+                                    <th>Filing Date: </th>
+                                    <td>2019-02-17</td>
+                                </tr>
+                                <th>Date Incorporated: </th>
+                                <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Registration ID:</th>
+                                    <td>20191137819 <br> 20191137819</td>
+                                </tr>
+                                <tr>
+                                    <th>D&B Filing Reference No: </th>
+                                    <td>14419315380</td>
+                                </tr>
+                                <tr>
+                                    <th>State of Incorp: </th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Business Type: </th>
+                                    <td>SELLERS PERMIT</td>
+                                </tr>
+                                <tr>
+                                    <th>Status: </th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">PRIMARY ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">MAILING ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>9361 CANOGA AVE</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>913115879</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="third-box">
+                            <h4 class="panel-title">WHERE FILED: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td> STATE BOARD OF EQUALIZATION</td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>450 N STREET</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td>SACRAMENTO</td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>958140000</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="forth-box">
+                            <h4 class="panel-title">REGISTERED AGENT: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="fifth-box">
+                            <h4 class="panel-title">PRINCIPALS: </h4>
+                            <ul style="list-style-type: none; padding-left: inherit">
+                                <table class="table">
+                                    <li><tr><th>Name:</th><td>JOSH1 S GOLDER</td></tr></li>
+                                    <li><tr><th>Type:</th><td> </td></tr></li>
+                                    <li><tr><th>Pub:</th><td>IndividualNameType</td></tr></li> 
+                                    <li><tr><th>Positions:</th><td></td></tr></li>
+                                    <li><tr><th>MANAGER/MEMBER:</th><td></td></tr></li>
+                                    <li><tr><th>City/Town:</th><td></td></tr></li>
+                                    <li><tr><th>State/Territory:</th><td>CA</td></tr></li> 
+                                    <li><tr><th>Postal Code:</th><td>916040000</td></tr></li> 
+                                </table>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row-data">
+                        <div class="first-box">
+                            <table class="table">
+                                <tr>
+                                    <th>Name: </th>
+                                    <td>CITY BEAUTY, LLC</td>
+                                </tr>
+                                <tr>
+                                    <th>As of: </th>
+                                    <td>2019-03-08</td>
+                                </tr>
+                                <tr>
+                                    <th>Filing Date: </th>
+                                    <td>2019-02-17</td>
+                                </tr>
+                                <th>Date Incorporated: </th>
+                                <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Registration ID:</th>
+                                    <td>20191137819 <br> 20191137819</td>
+                                </tr>
+                                <tr>
+                                    <th>D&B Filing Reference No: </th>
+                                    <td>14419315380</td>
+                                </tr>
+                                <tr>
+                                    <th>State of Incorp: </th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Business Type: </th>
+                                    <td>SELLERS PERMIT</td>
+                                </tr>
+                                <tr>
+                                    <th>Status: </th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">PRIMARY ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">MAILING ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>9361 CANOGA AVE</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>913115879</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="third-box">
+                            <h4 class="panel-title">WHERE FILED: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td> STATE BOARD OF EQUALIZATION</td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>450 N STREET</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td>SACRAMENTO</td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>958140000</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="forth-box">
+                            <h4 class="panel-title">REGISTERED AGENT: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="fifth-box">
+                            <h4 class="panel-title">PRINCIPALS: </h4>
+                            <ul style="list-style-type: none; padding-left: inherit">
+                                <table class="table">
+                                    <li><tr><th>Name:</th><td>JOSH1 S GOLDER</td></tr></li>
+                                    <li><tr><th>Type:</th><td> </td></tr></li>
+                                    <li><tr><th>Pub:</th><td>IndividualNameType</td></tr></li> 
+                                    <li><tr><th>Positions:</th><td></td></tr></li>
+                                    <li><tr><th>MANAGER/MEMBER:</th><td></td></tr></li>
+                                    <li><tr><th>City/Town:</th><td></td></tr></li>
+                                    <li><tr><th>State/Territory:</th><td>CA</td></tr></li> 
+                                    <li><tr><th>Postal Code:</th><td>916040000</td></tr></li> 
+                                </table>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row-data">
+                        <div class="first-box">
+                            <table class="table">
+                                <tr>
+                                    <th>Name: </th>
+                                    <td>CITY BEAUTY, LLC</td>
+                                </tr>
+                                <tr>
+                                    <th>As of: </th>
+                                    <td>2019-03-08</td>
+                                </tr>
+                                <tr>
+                                    <th>Filing Date: </th>
+                                    <td>2019-02-17</td>
+                                </tr>
+                                <th>Date Incorporated: </th>
+                                <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Registration ID:</th>
+                                    <td>20191137819 <br> 20191137819</td>
+                                </tr>
+                                <tr>
+                                    <th>D&B Filing Reference No: </th>
+                                    <td>14419315380</td>
+                                </tr>
+                                <tr>
+                                    <th>State of Incorp: </th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Business Type: </th>
+                                    <td>SELLERS PERMIT</td>
+                                </tr>
+                                <tr>
+                                    <th>Status: </th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">PRIMARY ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">MAILING ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>9361 CANOGA AVE</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>913115879</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="third-box">
+                            <h4 class="panel-title">WHERE FILED: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td> STATE BOARD OF EQUALIZATION</td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>450 N STREET</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td>SACRAMENTO</td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>958140000</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="forth-box">
+                            <h4 class="panel-title">REGISTERED AGENT: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="fifth-box">
+                            <h4 class="panel-title">PRINCIPALS: </h4>
+                            <ul style="list-style-type: none; padding-left: inherit">
+                                <table class="table">
+                                    <li><tr><th>Name:</th><td>JOSH1 S GOLDER</td></tr></li>
+                                    <li><tr><th>Type:</th><td> </td></tr></li>
+                                    <li><tr><th>Pub:</th><td>IndividualNameType</td></tr></li> 
+                                    <li><tr><th>Positions:</th><td></td></tr></li>
+                                    <li><tr><th>MANAGER/MEMBER:</th><td></td></tr></li>
+                                    <li><tr><th>City/Town:</th><td></td></tr></li>
+                                    <li><tr><th>State/Territory:</th><td>CA</td></tr></li> 
+                                    <li><tr><th>Postal Code:</th><td>916040000</td></tr></li> 
+                                </table>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row-data">
+                        <div class="first-box">
+                            <table class="table">
+                                <tr>
+                                    <th>Name: </th>
+                                    <td>CITY BEAUTY, LLC</td>
+                                </tr>
+                                <tr>
+                                    <th>As of: </th>
+                                    <td>2019-03-08</td>
+                                </tr>
+                                <tr>
+                                    <th>Filing Date: </th>
+                                    <td>2019-02-17</td>
+                                </tr>
+                                <th>Date Incorporated: </th>
+                                <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Registration ID:</th>
+                                    <td>20191137819 <br> 20191137819</td>
+                                </tr>
+                                <tr>
+                                    <th>D&B Filing Reference No: </th>
+                                    <td>14419315380</td>
+                                </tr>
+                                <tr>
+                                    <th>State of Incorp: </th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Business Type: </th>
+                                    <td>SELLERS PERMIT</td>
+                                </tr>
+                                <tr>
+                                    <th>Status: </th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">PRIMARY ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="second-box">
+                            <h4 class="panel-title">MAILING ADDRESS: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>9361 CANOGA AVE</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>913115879</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="third-box">
+                            <h4 class="panel-title">WHERE FILED: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td> STATE BOARD OF EQUALIZATION</td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td>450 N STREET</td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td>SACRAMENTO</td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td>CA</td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td>958140000</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="forth-box">
+                            <h4 class="panel-title">REGISTERED AGENT: </h4>
+                            <table class="table">
+                                <tr>
+                                    <th>Name:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Address:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>City/Town:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>State/Territory:</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Postal Code:</th>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="fifth-box">
+                            <h4 class="panel-title">PRINCIPALS: </h4>
+                            <ul style="list-style-type: none; padding-left: inherit">
+                                <table class="table">
+                                    <li><tr><th>Name:</th><td>JOSH1 S GOLDER</td></tr></li>
+                                    <li><tr><th>Type:</th><td> </td></tr></li>
+                                    <li><tr><th>Pub:</th><td>IndividualNameType</td></tr></li> 
+                                    <li><tr><th>Positions:</th><td></td></tr></li>
+                                    <li><tr><th>MANAGER/MEMBER:</th><td></td></tr></li>
+                                    <li><tr><th>City/Town:</th><td></td></tr></li>
+                                    <li><tr><th>State/Territory:</th><td>CA</td></tr></li> 
+                                    <li><tr><th>Postal Code:</th><td>916040000</td></tr></li> 
+                                </table>
+                            </ul>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="twelve wide stretched tabcontent" id="Infutor">
+            No Results
+        </div>
+        <div class="twelve wide stretched tabcontent" id="Web">
+            <div class="panel panel-table panel-info label-example">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Helpful URLs</h3>
+                </div>
+                <table class="table">
+                    <thead class="thead-inverse">
+                        <th>Source</th>
+                        <th>Title</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>facebook.com</td>
+                            <td><a href="https://www.facebook.com/dale621/">&quot;Dale
+                                    Harris | Facebook&quot;</a></td>
+                        </tr>
+                        <tr>
+                            <td>yellowpages.com</td>
+                            <td><a href="https://www.yellowpages.com/hudson-fl/appliance-parts-depot">&quot;Appliance
+                                    Parts Depot in Hudson, FL with Reviews - YP.com&quot;</a></td>
+                        </tr>
+                        <tr>
+                            <td>yellowpages.com</td>
+                            <td><a
+                                    href="https://www.yellowpages.com/fort-worth-tx/mip/appliance-repair-depot-465122318">&quot;Appliance
+                                    Repair Depot Fort Worth, TX 76133 - YP.com&quot;</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript"
+        src="https://productdesign.dnb.com/wp-content/themes/dnb-product-style-guide/library/dnb-product-design-guide/js/dnb-product-design-guide.js">
+        </script>
+    <script>
+        $(function () {
+            $('.collapse').on('show.bs.collapse', function () {
+                id = $(this).attr("id") + "-button";
+                $("#" + id).find(".btn-text").text("Hide Matches");
+            });
+            $('.collapse').on('hide.bs.collapse', function () {
+                id = $(this).attr("id") + "-button";
+                $("#" + id).find(".btn-text").text("View Matches");
+            })
+            $(".match-pass").each(function (i, pass) {
+                var h3 = $(pass).find("h3.panel-title").first();
+                $(pass).find("i.match-icon").each(function (j, icon) {
+                    h3.append($(icon).clone());
+                });
+            });
+            $(".ner").each(function (i, pass) {
+                var ner = $(this).data("ner");
+                $(this).addClass("label");
+                $(this).tooltip({
+                    "container": "body",
+                    "title": ner.replace(/_/g, ' '),
+                    "template": '<div class="tooltip" role="tooltip"><div class="tooltip-arrow ner-arw ner-' +
+                        ner + '-arw"></div><div class="tooltip-inner ner ner-' + ner +
+                        '"></div></div>'
+                });
+            });
+            $(".pass-param").each(function (i, pass) {
+                var source = $(this).data("source");
+                $(this).addClass("label");
+                $(this).tooltip({
+                    "container": "body",
+                    "title": source
+                });
+            });
+            $('[data-toggle="tooltip"]').tooltip();
+        })
+        // #### for Nav collapse fetaure #######
+        function panelCollapsing(element, type) {
+
+            var acc = element.closest('.panel-heading');
+            acc.classList.toggle("active");
+            var panel = acc.nextElementSibling;
+            if (panel.style.display === "block" || panel.style.display === "") {
+                panel.style.display = "none";
+                $(acc).find('span:first').removeClass('icon-minus3');
+                $(acc).find('span:first').addClass('icon-plus');
+                $('.ui.grid').addClass('header-close');
+                if(type == 'main'){
+                    $('.ui.grid').removeClass('grid-open');
+                    $('.ui.grid').addClass('grid-close');
+                }
+            } else {
+                panel.style.display = "block";
+                $('.ui.grid').removeClass('header-close');
+                $(acc).find('span:first').addClass('icon-minus3');
+                $(acc).find('span:first').removeClass('icon-plus');
+                if(type == 'main'){
+                    $('.ui.grid').addClass('grid-open');
+                    $('.ui.grid').removeClass('grid-close');
+                }
+            }
+        };
+        function principalShow(element) {
+            $(element).hide();
+            $('#principal2').css('display', 'block');
+        };
+        // for Nav Tabs 
+        $('.ui .item').on('click', function () {
+            $('.ui .item').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            if (evt) {
+                evt.currentTarget.className += " active";
+            }
+        }
+        openTab(null, 'Match');
+    </script>
+</body>
+
+</html

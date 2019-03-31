@@ -1,0 +1,813 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>D&amp;B IPT Ticket Resolution</title>
+    <link
+        href="https://productdesign.dnb.com/wp-content/themes/dnb-product-style-guide/library/dnb-product-design-guide/css/dnb-product-design-guide.css"
+        rel="stylesheet">
+    <style>
+        .case-details {
+            padding: 15px 10px 15px 10px;
+        }
+        .case-details .col-sm-4 {
+            padding-left: 0px;
+        }
+        .case-details .col-sm-4:last-child {
+            padding-right: 0px;
+        }
+        body {
+            background: #F1F6F8;
+            font-size: 12px;
+        }
+        .panel>.panel-heading .btn-primary-blue .badge {
+            color: #009ece;
+            background-color: #fff;
+            min-width: 850px;
+            overflow-x: auto;
+        }
+        .panel>.panel-heading .btn {
+            margin: 0;
+        }
+        .panel>.panel-heading span {
+            float: right;
+            margin-left: 5px;
+            line-height: 0;
+            border-color: #3095b4;
+        }
+        .panel>.panel-heading>.panel-title strong {
+            margin-top: 11px;
+        }
+        .panel>.panel-footer .alert {
+            margin-bottom: 0;
+        }
+        td .alert {
+            margin: 0;
+        }
+        .table>tbody>tr>td.comment {
+            max-width: 500px;
+            min-width: 120px;
+            line-height: 1.4em;
+        }
+        .panel-title {
+            font-size: 12px;
+            height: 26px;
+            vertical-align: middle;
+            line-height: 0;
+        }
+        h3.panel-title i.match-icon {
+            padding: 0px;
+        }
+
+        h3.panel-title i.match-icon.icon-delete {
+            color: #cf3154;
+        }
+
+        h3.panel-title i.match-icon.icon-success {
+            background-color: #3095b4;
+        }
+
+        h3.panel-title i.match-icon.icon-chain {
+            color: #e1a357;
+        }
+
+        h3.panel-title i.match-icon.icon-warning {
+            background-color: #3095b4;
+        }
+
+        table.match-grade-tip td,
+        table.match-grade-tip th {
+            white-space: nowrap;
+            text-align: left;
+            padding: 0 3px;
+        }
+
+        table.match-grade-tip tr {
+            border: 2px solid #005172;
+        }
+
+        table.match-grade-tip tr.match-grade-A {
+            background-color: #69C568;
+        }
+
+        table.match-grade-tip tr.match-grade-B {
+            background-color: #F79851;
+        }
+
+        table.match-grade-tip tr.match-grade-F {
+            background-color: #B54039;
+        }
+
+        div.tooltip-inner {
+            max-width: 1000px;
+        }
+
+        div.tooltip span.data-detail span.btn-icon-left {
+            color: #005172;
+        }
+
+        .ner {
+            background-color: #333;
+        }
+
+        .ner a {
+            color: #fff;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-arw {
+            border-top-color: #333;
+        }
+
+        .ner-PERSON {
+            background-color: #005172;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-PERSON-arw {
+            border-top-color: #005172;
+        }
+
+        .ner-PHONE {
+            background-color: #693A77;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-PHONE-arw {
+            border-top-color: #693A77;
+        }
+
+        .ner-DUNS {
+            background-color: #E1A357;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-DUNS-arw {
+            border-top-color: #E1A357;
+        }
+
+        .ner-ORGANIZATION {
+            background-color: #BC4C05;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-ORGANIZATION-arw {
+            border-top-color: #BC4C05;
+        }
+
+        .ner-EMAIL {
+            background-color: #284E36;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-EMAIL-arw {
+            border-top-color: #284E36;
+        }
+
+        .ner-ADDRESS {
+            background-color: #9C5FB5;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-ADDRESS-arw {
+            border-top-color: #9C5FB5;
+        }
+
+        .ner-CITY {
+            background-color: #006265;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-CITY-arw {
+            border-top-color: #006265;
+        }
+
+        .ner-STATE_OR_PROVINCE {
+            background-color: #B54039;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-STATE_OR_PROVINCE-arw {
+            border-top-color: #B54039;
+        }
+
+        .ner-COUNTRY {
+            background-color: #B54039;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-COUNTRY-arw {
+            border-top-color: #B54039;
+        }
+
+        .ner-DATE {
+            background-color: #3095B4;
+        }
+
+        .tooltip.top .tooltip-arrow.ner-DATE-arw {
+            border-top-color: #3095B4;
+        }
+
+        .ner-LOCATION {
+            background-color: #8F3F6D;
+        }
+        .tooltip.top .tooltip-arrow.ner-LOCATION-arw {
+            border-top-color: #8F3F6D;
+        }
+        span.label.pass-param {
+            color: #002e41;
+            border-color: #00B2A9;
+            line-height: 2em;
+        }
+        span.label.pass-param.pass-param-Text {
+            border-color: #9C5FB5;
+        }
+        div.panel.passtype-Structured {
+            border-color: #00B2A9;
+        }
+        div.panel.passtype-Structured>div.panel-heading,
+        div.panel.passtype-Structured>div.panel-body {
+            border-right-color: #3095B4;
+            border-left-color: #3095B4;
+        }
+        div.panel.passtype-Unstructured {
+            border-color: #9C5FB5;
+        }
+        div.panel.passtype-Unstructured>div.panel-heading,
+        div.panel.passtype-Unstructured>div.panel-body {
+            border-right-color: #9C5FB5;
+            border-left-color: #9C5FB5;
+        }
+        div.panel-body.overflow {
+            overflow-x: auto;
+        }
+        .table-list td:first-child {
+            color: #005172;
+            padding-right: 15px;
+        }
+        .lg-list.table-list td {
+            padding-bottom: 5px;
+        }
+        .table>thead>tr>th:after {
+            content: none;
+        }
+        .cluster tbody tr {
+            font-weight: bold;
+        }
+
+        /* Cuctom CSS Requires for new design */
+        .tabcontent {
+            display: none;
+        }
+        ::-webkit-scrollbar {
+            width: 10px;
+            }
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 2px grey; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bfbfbf; 
+            border-radius: 50px;
+        }
+        .ui.menu {
+            font-size: 12px;
+        }
+        .panel {
+            margin-bottom: 10px;
+            border-color: #3095b4;
+        }
+
+        .panel-info {
+            border-top: 0px;
+            margin-top: 0px;
+        }
+        .ui.grid {
+            height: calc(100vh - 260px);
+            padding: 0px 10px;
+            flex-wrap: nowrap;
+            margin: 0rem 1rem 1rem 1rem;
+            border: 1px solid rgb(212, 212, 212);
+
+            /* font-size: 13px;
+            font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif; */
+        }
+        .twelve.wide.stretched.tabcontent {
+            width: calc(100% - -83%);
+
+            padding-top: 10px;
+            padding-left: 0px;
+            height: calc(100vh - 260px);
+            margin-left: 0px;
+            margin-right: -10px;
+            background-color: rgb(241, 246, 250);
+
+
+            /*padding: 0px 10px;*/
+            /*background-color: white;*/
+            /*margin-right: 10px;*/
+            /*margin-top: 10px;*/
+            border: 0px solid rgb(212, 212, 213);
+            border-radius: 0.285714rem !important;
+            display: inline-block;
+            overflow-y: auto;
+        }
+        .table {
+            display: table;
+            font-size: 12px;
+        }
+        .table-cell {
+            Display: table-cell;
+            Vertical-align: top;
+        }
+        .fixed {
+            top: 0px;
+            position: fixed;
+            margin-right: 10px;
+            z-index: 20;
+            width: calc(100% - 20px);
+        }
+
+        .panel-heading {
+            transition: 0.4s ease;
+            background-color: #3095b4;
+            border-color: #3095b4;
+        }
+
+        .panel-body {
+            overflow: auto;
+            max-height: 300px;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .header-fixed .page-wrapper {
+            padding-top: 80px;
+        }
+
+        .ui.vertical.tabular.menu .active.item {
+            color: #003B53; 
+            background-color: rgb(241, 246, 250);
+            border: none;
+            height: 30px;
+            line-height: 6px;
+        }
+
+        .ui.vertical.tabular.menu .item {
+            color: #003B53; 
+            border: none;
+            height: 30px;
+            line-height: 6px;
+        }
+
+        .ui.vertical.tabular.menu {
+            border: none;
+        }
+
+        /* for fixed sticky header */
+        .fixed {
+            top: 70px;
+            position: fixed;
+            margin-right: 10px;
+            z-index: 20;
+            width: calc(100% - 20px);
+        }
+
+        side-nav{
+            top: 70px;
+            position: fixed;
+            margin-right: 10px;
+            z-index: 20;
+            width: calc(100% - 20px);
+        }
+
+        .updated-value{
+            margin:-15px -15px;
+        }
+
+        /* .ui.menu.fluid, .ui.vertical.menu.fluid {
+            position: fixed;
+            border: 2px solid;
+        } */
+
+        .ui.grid>.column:not(.row).three {
+            padding: 10px 0px 10px 10px;
+            height: calc(100vh - 260px);
+            margin-left: -10px;
+            margin-right: 10px;
+            background-color: cadetblue;
+        }
+
+        /* Anchor is used to bring the selected section into view */
+        .anchor {
+            border: 0px dashed DarkOrchid;
+            padding: 0px;
+        }
+
+        .fixed-header {
+            background-color: rgba(0, 0, 0, 0.2);
+            height: 50px;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+        }
+
+        .fixed-header > a {
+            display: inline-block;
+            margin: 5px 15px;
+        }
+
+        a {
+          color: #4DC9C9 !important;
+          border-color: #6C6C6C !important;
+        }
+
+        /* button recolor */
+        .nav-pills > li.active > a, .btn-primary {
+            background-color: #6C6C6C !important;
+            /* feeling like it's a rounded corners kind of day */
+            border-color: #6C6C6C !important;
+            border-radius: 25px; 
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="dnb-global-header navbar navbar-default">
+        <span class="navbar-brand"></span>
+        <h1>D&amp;B Business Data Research</h1>
+    </div>
+    <div class="row-ticket">
+            <div class="panel panel-info" >
+                <div class="panel-heading">
+                    <h1 class="panel-title">Ticket #18418375 <span onclick="panelCollapsing(this)"class="icon-minus3"></span>
+                        <span>Friday, February 15, 2019 2:10:05 AM UTC</span>
+                    </h1>
+                </div>
+                <div class="panel-body" style="border-color:#3095B4;">
+                    <div class="col-sm-12 detailed-boxes">
+                        <div class="updated-value">
+                            <div class="table" stype="cellpadding=4px">
+                                <div class="table-cell" style="max-width:164px; min-width:124px; width:124px; text-align: right; padding-right:16px;">
+                                    <div><b>DUNS: </b></div>
+                                    <div><b>HQ Parent DUNS: </b></div>
+                                    <div><b>Dom Ult DUNS: </b></div>
+                                    <div><b>Glbl DUNS: </b></div>
+                                    <div><b>SIC: </b></div>
+                                </div>
+                                <div class="table-cell" style="max-width:100px; min-width:90px; width:90px; text-align:right; padding-right:16px;">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                                <div class="table-cell" style="min-width:140px; width:140px; text-align:right; padding-right:16px;">
+                                    <div><b>Name: </b></div>
+                                    <div><b>Physical Address: </b></div>
+                                    <div><b>Mailing Address: </b></div>
+                                    <div><b>Registered Address: </b></div>
+                                    <div><b>URL: </b></div>
+                                </div>
+                                <div class="table-cell" style="min-width:400px; width:460px; text-align:left; padding-right:16px;">
+                                    <div>Acquisition 368, LLC</div>
+                                    <div></div>
+                                    <div></div>
+                                    <div>No Registered Address,</div>
+                                    <div>Unavailable</div>
+                                </div>
+                                <div class="table-cell" style="max-width:100px; min-width:50px; width:60px; text-align:right; padding-right:16px;">
+                                    <div><b>Phone: </b></div>
+                                    <div><b>Reg #: </b></div>
+                                    <div><b>FEIN: </b></div>
+                                    <div><b>CIK: </b></div>
+                                    <div><b>CICI: </b></div>
+                                </div>
+                                <div class="table-cell" style="max-width: 200px; min-width:120px; width:132px; text-align:right">
+                                    <div>Unconfirmed</div>
+                                    <div>Unavailable</div>
+                                    <div>321789465</div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="ui grid" >
+        <div class="three wide column" style="width: 120px !important; min-width: 100px; max-width: 100px;">
+            <ul class="ui nav nav-pills nav-stacked" style="width:100px;">
+                    <div class="ui vertical fluid tabular menu">
+                <a class="item active" onclick="openTab(event, 'Match')">Match</a>
+                <a class="item" onclick="openTab(event, 'PRDB')">PRDB</a>
+                <a class="item" onclick="openTab(event, 'Regulatory')">Regulatory</a>
+            </div>
+        </div>
+        <div class="twelve wide stretched tabcontent" id="Match" style="width: calc(100% - 16px);" ">
+            <div class="panel panel-table panel-info" >
+                <div class="panel-heading">
+                    <h3 class="panel-title clearfix">Match <span onclick="panelCollapsing(this)"
+                            class="icon-minus3"></span></h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead class="thead-inverse">
+                            <th>Confidence</th>
+                            <th>Grade</th>
+                            <th>DUNS</th>
+                            <th>Name</th>
+                            <th>Tradestyle</th>
+                            <th>CEO</th>
+                            <th>Physical Address</th>
+                            <th>Mailing Address</th>
+                            <th>Phone</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10</td>
+                                <td class="text-nowrap">
+                                    AAAAZZZAFBF
+                                    <a data-html="true" href="javascript:return false;" data-placement="top"
+                                        data-container="body" data-toggle="tooltip" data-original-title="<span class='tooltip-rich-content'>
+            <span class='data-detail'><span class='badge btn-icon-left'>10</span></span>
+            <div class='data-detail-caption'>
+            <strong>Match Grade</strong><br/>
+            <table class='match-grade-tip'>
+            <tbody>
+            <tr class='match-grade-A'><td>A</td><td>Name</td><td>ARGO NAVIS INVERSIONES SA.</td><td>100</td></tr>
+            <tr class='match-grade-A'><td>A</td><td>Bldg #</td><td>PASEO ISABEL LA CATOLICA, 27 - PISO 3 B</td><td>100</td></tr>
+            <tr class='match-grade-A'><td>A</td><td>Street</td><td>PASEO ISABEL LA CATOLICA, 27 - PISO 3 B</td><td>100</td></tr>
+            <tr class='match-grade-A'><td>A</td><td>City</td><td>VALLADOLID</td><td>100</td></tr>
+            <tr class='match-grade-Z'><td>Z</td><td>State</td><td></td><td>0</td></tr>
+            <tr class='match-grade-Z'><td>Z</td><td>PO Box</td><td></td><td>0</td></tr>
+            <tr class='match-grade-Z'>
+                <td>Z</td>
+                <td>Phone</td>
+                <td>
+                </td>
+                <td>0</td>
+            </tr>
+            <tr class='match-grade-A'>
+                <td>A</td>
+                <td>Zip</td>
+                <td>
+                </td>
+                <td>100</td>
+            </tr>
+            </tbody>
+            </table>
+            </div>
+            </span>"><span class="icon-info-with-circle"></span></a>
+                                </td>
+                                <td>
+                                    769593034
+                                </td>
+                                <td>ARGO NAVIS INVERSIONES SA.
+                                    <a data-html="true" href="javascript:return false;" data-placement="top"
+                                        data-container="body" data-toggle="tooltip" data-original-title="<span class='tooltip-rich-content'>
+            <div class='data-detail-caption'>
+            <strong>Match Data Profile</strong><br/>
+            <table class='match-grade-tip'>
+            <tbody>
+            <tr><td>Registered_Name</td></tr>
+            </tbody>
+            </table>
+            </div>
+            </span>"><span class="icon-info-with-circle"></span></a>
+                                </td>
+                                <td> </td>
+                                <td>ANGEL M GONZALEZ CASADO</td>
+                                <td>
+                                    PASEO ISABEL LA CATOLICA, 27 - PISO 3 B,
+                                    <br />
+                                    VALLADOLID,
+                                    47003
+                                    <a data-html="true" href="javascript:return false;" data-placement="top"
+                                        data-container="body" data-toggle="tooltip" data-original-title="<span class='tooltip-rich-content'>
+            <div class='data-detail-caption'>
+            <strong>Match Data Profile</strong><br/>
+            <table class='match-grade-tip'>
+            <tbody>
+            <tr><td>Primary_Address</td></tr>
+            </tbody>
+            </table>
+            </div>
+            </span>"><span class="icon-info-with-circle"></span></a>
+                                </td>
+                                <td>
+
+                                </td>
+                                <td class="text-nowrap">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div class="twelve wide stretched tabcontent" style="width: calc(100% - 16px);"  id="PRDB" >
+            <div class="panel panel-table panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title clearfix">Directplus-PRDB<span onclick="panelCollapsing(this)"
+                            class="icon-minus3"></span></h3>
+                </div>
+                <div class="panel-body">
+                    <div class="font-weight-bold"><b>This source is only invoked for the following countries: US</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="twelve wide stretched tabcontent" style="width: calc(100% - 16px);" id="Regulatory" >
+            <div class="panel panel-table panel-info">
+                <div class="panel heading" style="margin-bottom: 0px; height: 33px; border: 0px solid #009; background-color:steelblue;" >
+                    <a href="#Edgar"  target="_self" type="button" style="margin: 5px 16px 3px 16px; padding: 2px 4px 2px 4px"  >Go to Edgar</a>
+                    <a href="#FDIC"   target="_self" type="button" style="margin: 5px 16px 3px 16px;  padding: 2px 4px 2px 4px" ">Go to FDIC</a>
+                    <a href="#GLIEF"  target="_self" type="button" style="margin: 5px 16px 3px 16px;  padding: 2px 4px 2px 4px" >Go to GLEIF</a>
+                    <a href="#NIC"    target="_self" type="button" style="margin: 5px 16px 3px 16px;  padding: 2px 4px 2px 4px" >Go to NIC</a>
+                </div>
+            </div>
+            <div class="panel-body" style="border: 0px; padding: 0px; width: calc(100% - 0px); max-height: calc(100vh - 324px); height: calc(100vh);" id="MultiSrcPanel">
+                <div id="Edgar" class="anchor" >
+                    <div class="panel panel-table panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">EDGAR<span onclick="panelCollapsing(this)"
+                                    class="icon-minus3"></span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <b>No MF records matched your query</b>
+                            <table class="table-list">
+                                <tbody>
+                                </tbody>
+                            </table>
+                            </tr>
+                            </tbody>
+                            </table>
+                            </tr>
+                            </tbody>
+                            </table>
+                            </tr>
+                            </tbody>
+                            </table>
+                            </tr>
+                            </tbody>
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div id="FDIC" class="anchor" >
+                    <div class="panel panel-table panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">FDIC<span onclick="panelCollapsing(this)"
+                                    class="icon-minus3"></span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="font-weight-bold"><b>This source is only invoked for the following SIC codes: 6011,
+                                    6021, 6022, 6029, 6712</b></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="GLEIF" class="anchor" onclick="panelController">
+                    <div class="panel panel-table panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title clearfix">GLEIF<span onclick="panelCollapsing(this)"
+                                    class="icon-minus3"></span></h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-sm-12 detailed-boxes">
+                                <div class="updated-value" style="margin-top: 0px; margin-bottom: 0px;">
+                                    <div class="table" stype="cellpadding=8px">
+                                        <div class="table-cell" style="max-width:300px; min-width:220px; width:220px; text-align: right; padding-right:16px;">
+                                            <div><b>LEI: </b></div>
+                                            <div><b>Name: </b></div>
+                                            <div><b>LegalName: </b></div>
+                                            <div><b>Registration Authority ID: </b></div>
+                                            <div><b>Registration Authority Entity ID: </b></div>
+                                        </div>
+                                        <div class="table-cell" style="max-width:350px; min-width:300px; width:300px; text-align:left; padding-right:16px;">
+                                            <div>959800ZSTG5L94QWQF04</div>
+                                            <div>ARGO NAVIS INVERSIONES SA</div>
+                                            <div>ARGO NAVIS INVERSIONES SA</div>
+                                            <div>RA000533</div>
+                                            <div>VA-25498-8</div>
+                                        </div>
+                                        <div class="table-cell" style="min-width:150px; width:150px; text-align:right; padding-right:16px;">
+                                            <div><b>Legal Jurisdiction: </b></div>
+                                            <div><b>Legal Form Code: </b></div>
+                                            <div><b>Entity Status: </b></div>
+                                            <div><b>Registeration Status: </b></div>
+                                            <div><b>Managing LOU: </b></div>
+                                        </div>
+                                        <div class="table-cell" style="min-width:200px; width:200px; text-align:left; padding-right:16px;">
+                                            <div>ES</div>
+                                            <div>5RDO</div>
+                                            <div>ACTIVE</div>
+                                            <div>ISSUED</div>
+                                            <div>959800R2X69K6Y6MX775</div>
+                                        </div>
+                                        <div class="table-cell" style="min-width:180px; width:180px; text-align:right; padding-right:16px;">
+                                            <div><b>Validation Sources: </b></div>
+                                            <div><b>initial Registration Date: </b></div>
+                                            <div><b>Last Update Date: </b></div>
+                                            <div><b>Next Renewal Date: </b></div>
+                                            <div><b></b></div>
+                                        </div>
+                                        <div class="table-cell" style="max-width:300px; min-width:200px; width:200px; text-align:right">
+                                            <div>959800R2X69K6Y6MX775</div>
+                                            <div>2017-12-21T10:04:52.886+01:00</div>
+                                            <div>2018-11-28T14:17:30.024+01:00</div>
+                                            <div>2019-12-21T10:04:52.886+01:00</div>
+                                            <div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:block; position:relative; height:32px; max-height: 40px;width:100%; clear:both;"></div>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td style="font-weight:bold; padding: 4px 8px 4px 8px;">Address Type: </td>
+                                            <td style="font-weight:bold; padding: 4px 8px 4px 0px;">Street Address: </td>
+                                            <td style="font-weight:bold; padding: 4px 8px 4px 0px;">City: </td>
+                                            <td style="font-weight:bold; padding: 4px 8px 4px 0px;">Region: </td>
+                                            <td style="font-weight:bold; padding: 4px 8px 4px 0px;">Postal Code: </td>
+                                            <td style="font-weight:bold; padding: 4px 8px 4px 0px;">Country: </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 4px 8px 4px 8px;">Legal Address </td>
+                                            <td style="padding: 4px 8px 4px 0px;">PASEO ISABEL LA CATOLICA 27 3B </td>
+                                            <td style="padding: 4px 8px 4px 0px;">Valladolid </td>
+                                            <td style="padding: 4px 8px 4px 0px;"></td>
+                                            <td style="padding: 4px 8px 4px 0px;">47003 </td>
+                                            <td style="padding: 4px 8px 4px 0px;">ES </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="NIC" class="anchor">
+                            <div class="panel panel-table panel-info">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title clearfix">NIC<span onclick="panelCollapsing(this)"
+                                            class="icon-minus3"></span></h3>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="font-weight-bold">
+                                        <b>This source is only invoked for the following SIC codes: 6011, 6021, 6022, 6029, 6712</b>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+    <!-- new design for the ER&C desing ends here -->
+    <script>
+        $('.ui .item').on('click', function () {
+            $('.ui .item').removeClass('active');
+            $(this).addClass('active');
+        });
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            if (evt) {
+                evt.currentTarget.className += " active";
+            }
+        }
+        openTab(null, 'Match');
+        // for panel collapsing
+        function panelCollapsing(element) {
+
+            var acc = element.closest('.panel-heading');
+            acc.classList.toggle("active");
+            var panel = acc.nextElementSibling;
+            if (panel.style.display === "block" || panel.style.display === "") {
+                panel.style.display = "none";
+                $(acc).find('span:first').removeClass('icon-minus3');
+                $(acc).find('span:first').addClass('icon-plus');
+            } else {
+                panel.style.display = "block";
+                $(acc).find('span:first').addClass('icon-minus3');
+                $(acc).find('span:first').removeClass('icon-plus');
+            }
+        };
+        // Sticky Header
+        $(window).scroll(function () {
+            var sticky = $('#myPanel', '#MultiSrcPanel'),
+                scroll = $(window).scrollTop();
+            if (scroll >= 60) sticky.addClass('fixed');
+            else sticky.removeClass('fixed');
+        });
+    </script>
+
+</body>
+
+</html>
