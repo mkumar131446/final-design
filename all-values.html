@@ -11,9 +11,17 @@
     <link href="https://productdesign.dnb.com/wp-content/themes/dnb-product-style-guide/library/dnb-product-design-guide/css/dnb-product-design-guide.css"
         rel="stylesheet">
 <style>
+    html{
+        overflow: hidden;
+    }
     body {
         background: #F1F6F8;
         font-size: 12px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex: 1 1 0%;
+        flex-direction: column;
     }
     .panel>.panel-heading .btn-primary-blue .badge {
         color: #009ece;
@@ -277,17 +285,21 @@
     }
     .ui.grid {
         padding: 0px 10px;
-        height: calc(100vh - 236px);
+        height: 100%;
         flex-wrap: nowrap;
         border: 1px solid rgb(212, 212, 212);
         margin: 0rem 1rem 1rem 1rem;
     }
     .twelve.wide.stretched.tabcontent {
         width: calc(100% - -83%);
-        height: calc(100vh - 244px);
         padding: 0px;
         border-radius: 0.285714rem !important;
-        overflow: auto;
+        overflow: auto;   
+        position: relative;
+        display: flex;
+        flex: 1 1 0%;
+        flex-direction: column;
+        height: 100%;
     }
     .table {
         display: table;
@@ -340,10 +352,12 @@
     }
     .ui.grid>.column:not(.row).three {
         padding: 10px 0px 10px 10px;
-        height: calc(100% - 136x);
+        min-width: 100px;
+        max-width: 100px;
         margin-left: -10px;
         margin-right: 10px;
         background-color: cadetblue;
+        height: 100%;
     }
     .prdb{
         padding-top: 10px;
@@ -363,33 +377,21 @@
     .dnb-project-header{
         padding: 0px 0px;
     }
-    .navbar-default{
+    .navbar-default {
         padding: 0px 16px;
-        margin-bottom: 8px;
-        position: fixed;
+        min-height: 68px;
+        margin-bottom: 0px;
         width: 100%;
-        background-color: white;
-        z-index: 9;
-        top: 0;
     }
-    .row-ticket{
+
+    .row-ticket {
         padding: 0px 8px;
-        margin-top: 70px;
-        position: fixed;
         width: 100%;
         background-color: #f1f6f8;
-        z-index: 9;
-        top: 0;
-    }   
+    }    
     .row{
         margin-left: -10px;
         margin-right: -10px;
-    }
-    .ui.grid.grid-open{
-        margin-top: 277px;
-    }
-    .ui.grid.grid-close{
-        margin-top: 108px;
     }
 </style>
 </head>
@@ -450,7 +452,7 @@
             </div>
         </div>
     </div>
-    <div class="ui grid grid-open">
+    <div class="ui grid">
     <!-- Nav tabs -->
         <div class="three wide column">
             <div class="ui vertical fluid tabular menu">
@@ -2108,20 +2110,12 @@
                 panel.style.display = "none";
                 $(acc).find('span:first').removeClass('icon-minus3');
                 $(acc).find('span:first').addClass('icon-plus');
-                $('.ui.grid').addClass('header-close');
-                if(type == 'main'){
-                    $('.ui.grid').removeClass('grid-open');
-                    $('.ui.grid').addClass('grid-close');
-                }
+                
             } else {
                 panel.style.display = "block";
-                $('.ui.grid').removeClass('header-close');
                 $(acc).find('span:first').addClass('icon-minus3');
                 $(acc).find('span:first').removeClass('icon-plus');
-                if(type == 'main'){
-                    $('.ui.grid').addClass('grid-open');
-                    $('.ui.grid').removeClass('grid-close');
-                }
+                
             }
         };
         // for Nav Tabs 
@@ -2139,7 +2133,7 @@
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).style.display = "inherit";
             if (evt) {
                 evt.currentTarget.className += " active";
             }
